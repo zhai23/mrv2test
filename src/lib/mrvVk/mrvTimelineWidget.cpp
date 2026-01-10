@@ -25,7 +25,7 @@
 #include <tlTimelineVk/Render.h>
 #include <tlTimelineVk/RenderShadersBinary.h>
 
-#include <tlTimelineUIVk/TimelineWidget.h>
+#include <tlTimelineUI/TimelineWidget.h>
 
 #include <tlUI/IClipboard.h>
 #include <tlUI/IWindow.h>

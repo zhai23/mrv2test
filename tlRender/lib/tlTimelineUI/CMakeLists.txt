@@ -35,10 +35,18 @@ set(SOURCE
     TransitionItem.cpp
     VideoClipItem.cpp)
 
-add_library(tlTimelineUI ${HEADERS} ${HEADERS_PRIVATE} ${SOURCE})
-target_link_libraries(tlTimelineUI PUBLIC tlUI PRIVATE ${LIBRARIES_PRIVATE})
-set_target_properties(tlTimelineUI PROPERTIES FOLDER lib)
-set_target_properties(tlTimelineUI PROPERTIES PUBLIC_HEADER "${HEADERS}")
+if(MRV2_BACKEND STREQUAL "VK")
+    set(LIBRARY_NAME tlTimelineUIVk)
+endif()
+
+if(MRV2_BACKEND STREQUAL "GL")
+    set(LIBRARY_NAME tlTimelineUI)
+endif()
+
+add_library(${LIBRARY_NAME} ${HEADERS} ${HEADERS_PRIVATE} ${SOURCE})
+target_link_libraries(${LIBRARY_NAME} PUBLIC tlUI PRIVATE ${LIBRARIES_PRIVATE})
+set_target_properties(${LIBRARY_NAME} PROPERTIES FOLDER lib)
+set_target_properties(${LIBRARY_NAME} PROPERTIES PUBLIC_HEADER "${HEADERS}")
 
 install(TARGETS tlTimelineUI
     ARCHIVE DESTINATION lib

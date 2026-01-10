@@ -39,6 +39,9 @@ namespace tl
                 const std::shared_ptr<gl::GLFWWindow>&,
                 const std::shared_ptr<system::Context>&,
                 const std::shared_ptr<IWidget>& parent);
+
+            
+            TimelineItem();
 #endif
 
 #ifdef VULKAN_BACKEND
@@ -49,9 +52,9 @@ namespace tl
                 const std::shared_ptr<ItemData>&,
                 const std::shared_ptr<system::Context>&,
                 const std::shared_ptr<IWidget>& parent);
+
+            TimelineItem(Fl_Vk_Context&);	
 #endif
-            
-            TimelineItem();
 
         public:
             virtual ~TimelineItem();
@@ -129,6 +132,10 @@ namespace tl
 
             void _releaseMouse() override;
 
+#ifdef VULKAN_BACKEND
+            Fl_Vk_Context& ctx;
+#endif
+            
         private:
             bool _isTrackVisible(int) const;
 

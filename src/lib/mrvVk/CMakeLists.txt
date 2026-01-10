@@ -47,7 +47,6 @@ files_to_absolute_paths()
 
 target_link_libraries(mrvVk PUBLIC ${LIBRARIES} PRIVATE ${LIBRARIES_PRIVATE})
 set_target_properties(mrvVk PROPERTIES FOLDER lib)
-target_compile_definitions(mrvVk PUBLIC VULKAN_BACKEND)
 
 add_dependencies(mrvVk mrvVoice)
 

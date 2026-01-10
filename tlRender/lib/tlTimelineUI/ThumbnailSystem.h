@@ -19,10 +19,13 @@
 
 namespace tl
 {
+
+#ifdef OPENGL_BACKEND
     namespace gl
     {
         class GLFWWindow;
     }
+#endif
 
     namespace TIMELINEUI
     {
@@ -147,7 +150,6 @@ namespace tl
 #endif
 
 #ifdef VULKAN_BACKEND
-            #error a
             void _init(
                 const std::shared_ptr<ThumbnailCache>&,
                 const std::shared_ptr<system::Context>&);
@@ -233,14 +235,29 @@ namespace tl
         protected:
             void _init(const std::shared_ptr<system::Context>&);
 
+#ifdef OPENGL_BACKEND
             ThumbnailSystem();
+#endif
+
+#ifdef VULKAN_BACKEND
+            ThumbnailSystem(Fl_Vk_Context&);
+#endif
 
         public:
             ~ThumbnailSystem();
 
+#ifdef OPENGL_BACKEND
             //! Create a new system.
             static std::shared_ptr<ThumbnailSystem>
             create(const std::shared_ptr<system::Context>&);
+#endif
+
+#ifdef VULKAN_BACKEND
+            //! Create a new system.
+            static std::shared_ptr<ThumbnailSystem>
+            create(const std::shared_ptr<system::Context>&,
+                   Fl_Vk_Context& ctx);
+#endif
 
             //! Get information.
             InfoRequest
@@ -265,6 +282,10 @@ namespace tl
             const std::shared_ptr<ThumbnailCache>& getCache() const;
 
         private:
+#ifdef VULKAN_BACKEND
+            Fl_Vk_Context& ctx;
+#endif
+            
             TLRENDER_PRIVATE();
         };
     } // namespace TIMELINEUI

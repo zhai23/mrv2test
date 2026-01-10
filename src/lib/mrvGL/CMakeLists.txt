@@ -51,7 +51,6 @@ files_to_absolute_paths()
 
 target_link_libraries(mrvGL PUBLIC ${LIBRARIES} PRIVATE ${LIBRARIES_PRIVATE})
 set_target_properties(mrvGL PROPERTIES FOLDER lib)
-target_compile_definitions(mrvGL PUBLIC OPENGL_BACKEND)
 
 if(TLENDER_FFMPEG)
     add_dependencies(mrvGL mrvVoice)

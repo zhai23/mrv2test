@@ -3,14 +3,8 @@
 // Copyright Contributors to the mrv2 Project. All rights reserved.
 
 #include "mrvCore/mrvBackend.h"
-
-#ifdef OPENGL_BACKEND
 #include <tlTimelineUI/IItem.h>
-#endif
 
-#ifdef VULKAN_BACKEND
-#include <tlTimelineUIVk/IItem.h>
-#endif
 
 namespace tl
 {

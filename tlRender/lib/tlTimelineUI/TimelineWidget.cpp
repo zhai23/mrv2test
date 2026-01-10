@@ -103,12 +103,13 @@ namespace tl
             p.scrollWidget->setBorder(false);
         }
 
+        TimelineWidget::~TimelineWidget() {}
+
+#ifdef OPENGL_BACKEND
         TimelineWidget::TimelineWidget() :
             _p(new Private)
         {
         }
-
-        TimelineWidget::~TimelineWidget() {}
 
         std::shared_ptr<TimelineWidget> TimelineWidget::create(
             const std::shared_ptr<timeline::ITimeUnitsModel>& timeUnitsModel,
@@ -119,7 +120,27 @@ namespace tl
             out->_init(timeUnitsModel, context, parent);
             return out;
         }
+#endif
 
+#ifdef VULKAN_BACKEND        
+        TimelineWidget::TimelineWidget(Fl_Vk_Context& ctx) :
+            ctx(ctx),
+            _p(new Private)
+        {
+        }
+
+        std::shared_ptr<TimelineWidget> TimelineWidget::create(
+            const std::shared_ptr<timeline::ITimeUnitsModel>& timeUnitsModel,
+            Fl_Vk_Context& ctx,
+            const std::shared_ptr<system::Context>& context,
+            const std::shared_ptr<IWidget>& parent)
+        {
+            auto out = std::shared_ptr<TimelineWidget>(new TimelineWidget(ctx));
+            out->_init(timeUnitsModel, context, parent);
+            return out;
+        }
+#endif
+        
         double TimelineWidget::getScale() const
         {
             TLRENDER_P();
@@ -743,11 +764,20 @@ namespace tl
                     p.itemData->speed = p.player->getDefaultSpeed();
                     p.itemData->directory = p.player->getPath().getDirectory();
                     p.itemData->options = p.player->getOptions();
+#ifdef OPENGL_BACKEND
                     p.timelineItem = TimelineItem::create(
                         p.player,
                         p.player->getTimeline()->getTimeline()->tracks(),
                         p.scale, p.itemOptions->get(), p.displayOptions->get(),
                         p.itemData, p.window, context);
+#endif
+#ifdef VULKAN_BACKEND
+                    p.timelineItem = TimelineItem::create(
+                        p.player,
+                        p.player->getTimeline()->getTimeline()->tracks(),
+                        p.scale, p.itemOptions->get(), p.displayOptions->get(),
+                        p.itemData, ctx, context);
+#endif
                     p.timelineItem->setEditable(p.editable->get());
                     p.timelineItem->setEditMode(p.editMode->get());
                     p.timelineItem->setStopOnScrub(p.stopOnScrub->get());

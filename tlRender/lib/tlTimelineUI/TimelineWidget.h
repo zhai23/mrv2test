@@ -26,16 +26,33 @@ namespace tl
                 const std::shared_ptr<system::Context>&,
                 const std::shared_ptr<IWidget>& parent);
 
+#ifdef OPENGL_BACKEND
             TimelineWidget();
+#endif
+
+#ifdef VULKAN_BACKEND
+            TimelineWidget(Fl_Vk_Context& ctx);
+#endif
 
         public:
             virtual ~TimelineWidget();
 
+#ifdef OPENGL_BACKEND
             //! Create a new widget.
             static std::shared_ptr<TimelineWidget> create(
                 const std::shared_ptr<timeline::ITimeUnitsModel>&,
                 const std::shared_ptr<system::Context>&,
                 const std::shared_ptr<IWidget>& parent = nullptr);
+#endif
+
+#ifdef VULKAN_BACKEND
+            //! Create a new widget.
+            static std::shared_ptr<TimelineWidget> create(
+                const std::shared_ptr<timeline::ITimeUnitsModel>&,
+                Fl_Vk_Context& ctx,
+                const std::shared_ptr<system::Context>&,
+                const std::shared_ptr<IWidget>& parent = nullptr);
+#endif
 
             //! Set the timeline player.
             void setPlayer(const std::shared_ptr<timeline::Player>&);
@@ -192,6 +209,10 @@ namespace tl
             
         protected:
             void _releaseMouse() override;
+
+#ifdef VULKAN_BACKEND
+            Fl_Vk_Context& ctx;
+#endif
 
         private:
             void _setViewZoom(

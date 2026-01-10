@@ -44,8 +44,13 @@ if ( UNIX )
     link_directories(${CMAKE_INSTALL_PREFIX}/lib)
 endif()
 
-if (MRV2_BACKEND STREQUAL "VK" OR MRV2_BACKEND STREQUAL "BOTH")
+if (MRV2_BACKEND STREQUAL "VK")
     find_package(Vulkan OPTIONAL_COMPONENTS glslang shaderc_combined SPIRV-Tools)
+    add_compile_definitions(-D VULKAN_BACKEND)
+endif()
+
+if (MRV2_BACKEND STREQUAL "GL")
+    add_compile_definitions(-D OPENGL_BACKEND)
 endif()
 
 find_package(FLTK CONFIG REQUIRED)

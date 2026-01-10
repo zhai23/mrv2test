@@ -35,6 +35,14 @@ namespace tl
 #endif
 
 #ifdef VULKAN_BACKEND
+        void TimelineItem::_init(
+            const std::shared_ptr<timeline::Player>& player,
+            const otio::SerializableObject::Retainer<otio::Stack>& stack,
+            double scale, const ItemOptions& options,
+            const DisplayOptions& displayOptions,
+            const std::shared_ptr<ItemData>& itemData,
+            const std::shared_ptr<system::Context>& context,
+            const std::shared_ptr<IWidget>& parent)
 #endif
         {
             const otime::TimeRange timeRange = player->getTimeRange();
@@ -62,6 +70,14 @@ namespace tl
 #endif
 
 #ifdef VULKAN_BACKEND
+            if (!context->getSystem<timelineui_vk::ThumbnailSystem>())
+            {
+                context->addSystem(timelineui_vk::ThumbnailSystem::create(context, ctx));
+            }
+                
+            p.thumbnailGenerator = timelineui_vk::ThumbnailGenerator::create(
+                context->getSystem<timelineui_vk::ThumbnailSystem>()->getCache(), context,
+                ctx);
 #endif
 
             const auto otioTimeline = p.player->getTimeline()->getTimeline();
@@ -203,12 +219,13 @@ namespace tl
                     });
         }
 
+        TimelineItem::~TimelineItem() {}
+
+#ifdef OPENGL_BACKEND
         TimelineItem::TimelineItem() :
             _p(new Private)
         {
         }
-
-        TimelineItem::~TimelineItem() {}
 
         std::shared_ptr<TimelineItem> TimelineItem::create(
             const std::shared_ptr<timeline::Player>& player,
@@ -226,6 +243,32 @@ namespace tl
                 context, parent);
             return out;
         }
+#endif
+
+#ifdef VULKAN_BACKEND
+        TimelineItem::TimelineItem(Fl_Vk_Context& ctx) :
+            ctx(ctx),
+            _p(new Private)
+        {
+        }
+
+        std::shared_ptr<TimelineItem> TimelineItem::create(
+            const std::shared_ptr<timeline::Player>& player,
+            const otio::SerializableObject::Retainer<otio::Stack>& stack,
+            double scale, const ItemOptions& options,
+            const DisplayOptions& displayOptions,
+            const std::shared_ptr<ItemData>& itemData,
+            Fl_Vk_Context& ctx,
+            const std::shared_ptr<system::Context>& context,
+            const std::shared_ptr<IWidget>& parent)
+        {
+            auto out = std::shared_ptr<TimelineItem>(new TimelineItem(ctx));
+            out->_init(
+                player, stack, scale, options, displayOptions, itemData,
+                context, parent);
+            return out;
+        }
+#endif
 
         void TimelineItem::setEditable(bool value)
         {

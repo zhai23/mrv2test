@@ -184,12 +184,6 @@ namespace tl
 
             //! Cancel pending requests.
             void cancelRequests(const std::vector<uint64_t>&);
-
-            //! Start the threads.
-            void startThreads();
-            
-            //! Exit the threads.
-            void exitThreads();
             
         private:
             void _infoRun();
@@ -198,6 +192,8 @@ namespace tl
             void _infoCancel();
             void _thumbnailCancel();
             void _waveformCancel();
+            void _startThreads();
+            void _exitThreads();
 
             Fl_Vk_Context& ctx;
             

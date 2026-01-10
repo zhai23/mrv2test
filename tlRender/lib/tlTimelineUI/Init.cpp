@@ -17,10 +17,15 @@ namespace tl
         {
             tl::timeline::init(context);
             tl::ui::init(context);
+
+#ifdef OPENGL_BACKEND
+            // We cannot init the Vulkan thumbnail system here as we need
+            // the FLTK context
             if (!context->getSystem<TIMELINEUI::ThumbnailSystem>())
             {
                 context->addSystem(TIMELINEUI::ThumbnailSystem::create(context));
             }
+#endif
         }
     } // namespace TIMELINEUI
 } // namespace tl
