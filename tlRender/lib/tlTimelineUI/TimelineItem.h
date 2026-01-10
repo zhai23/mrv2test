@@ -19,7 +19,7 @@ namespace tl
         class GLFWWindow;
     }
 
-    namespace timelineui
+    namespace TIMELINEUI
     {
         //! Track types.
         enum class TrackType { kNone, Video, Audio };
@@ -30,6 +30,7 @@ namespace tl
         class TimelineItem : public IItem
         {
         protected:
+#ifdef OPENGL_BACKEND
             void _init(
                 const std::shared_ptr<timeline::Player>&,
                 const otio::SerializableObject::Retainer<otio::Stack>&,
@@ -38,12 +39,24 @@ namespace tl
                 const std::shared_ptr<gl::GLFWWindow>&,
                 const std::shared_ptr<system::Context>&,
                 const std::shared_ptr<IWidget>& parent);
+#endif
 
+#ifdef VULKAN_BACKEND
+            void _init(
+                const std::shared_ptr<timeline::Player>&,
+                const otio::SerializableObject::Retainer<otio::Stack>&,
+                double scale, const ItemOptions&, const DisplayOptions&,
+                const std::shared_ptr<ItemData>&,
+                const std::shared_ptr<system::Context>&,
+                const std::shared_ptr<IWidget>& parent);
+#endif
+            
             TimelineItem();
 
         public:
             virtual ~TimelineItem();
 
+#ifdef OPENGL_BACKEND
             //! Create a new item.
             static std::shared_ptr<TimelineItem> create(
                 const std::shared_ptr<timeline::Player>&,
@@ -53,7 +66,20 @@ namespace tl
                 const std::shared_ptr<gl::GLFWWindow>&,
                 const std::shared_ptr<system::Context>&,
                 const std::shared_ptr<IWidget>& parent = nullptr);
+#endif
 
+#ifdef VULKAN_BACKEND
+            //! Create a new item.
+            static std::shared_ptr<TimelineItem> create(
+                const std::shared_ptr<timeline::Player>&,
+                const otio::SerializableObject::Retainer<otio::Stack>&,
+                double scale, const ItemOptions&, const DisplayOptions&,
+                const std::shared_ptr<ItemData>&,
+                Fl_Vk_Context& ctx,
+                const std::shared_ptr<system::Context>&,
+                const std::shared_ptr<IWidget>& parent = nullptr);
+#endif
+            
             //! Set whether the timeline is editable.
             void setEditable(bool);
 
@@ -156,5 +182,5 @@ namespace tl
 
             TLRENDER_PRIVATE();
         };
-    } // namespace timelineui
+    } // namespace TIMELINEUI
 } // namespace tl

@@ -7,6 +7,10 @@
 
 #include <tlUI/DrawUtil.h>
 
+#ifdef VULKAN_BACKEND
+#    include <tlTimelineVk/Render.h>
+#endif
+
 #include <tlTimeline/RenderUtil.h>
 #include <tlTimeline/Util.h>
 
@@ -17,7 +21,7 @@
 
 namespace tl
 {
-    namespace timelineui
+    namespace TIMELINEUI
     {
         struct VideoClipItem::Private
         {
@@ -36,7 +40,7 @@ namespace tl
             SizeData size;
 
             io::Options ioOptions;
-            timelineui::InfoRequest infoRequest;
+            TIMELINEUI::InfoRequest infoRequest;
             std::shared_ptr<io::Info> ioInfo;
             std::map<otime::RationalTime, ThumbnailRequest>
                 thumbnailRequests;
@@ -57,7 +61,7 @@ namespace tl
             IBasicItem::_init(
                 !clip->name().empty() ? clip->name()
                                       : path.getFileName(false),
-                ui::ColorRole::VideoClip, "tl::timelineui::VideoClipItem",
+                ui::ColorRole::VideoClip, "tl::TIMELINEUI::VideoClipItem",
                 clip.value, scale, options, displayOptions, itemData, context,
                 parent);
             TLRENDER_P();
@@ -94,7 +98,7 @@ namespace tl
             double scale, const ItemOptions& options,
             const DisplayOptions& displayOptions,
             const std::shared_ptr<ItemData>& itemData,
-            const std::shared_ptr<timelineui::ThumbnailGenerator> thumbnailGenerator,
+            const std::shared_ptr<TIMELINEUI::ThumbnailGenerator> thumbnailGenerator,
             const std::shared_ptr<system::Context>& context,
             const std::shared_ptr<IWidget>& parent)
         {
@@ -212,6 +216,7 @@ namespace tl
             const math::Box2i& drawRect, const ui::DrawEvent& event)
         {
             IBasicItem::drawEvent(drawRect, event);
+            
             if (_displayOptions.thumbnails)
             {
                 _drawThumbnails(drawRect, event);
@@ -262,11 +267,11 @@ namespace tl
                     : 0;
             if (thumbnailWidth > 0)
             {
+                timeline::BackgroundOptions background;
+                background.type = timeline::Background::Transparent;
                 const int w = g.w();
-                int idx = 0;
                 for (int x = 0; x < w; x += thumbnailWidth)
                 {
-                    ++idx;
                     const math::Box2i box(
                         g.min.x + x,
                         g.min.y + (_displayOptions.clipInfo
@@ -299,7 +304,11 @@ namespace tl
                                 timeline::VideoData videoData;
                                 videoData.size = i->second->getSize();
                                 videoData.layers.push_back({i->second});
-                                
+
+#ifdef VULKAN_BACKEND
+                                event.render->endRenderPass();
+#endif
+
                                 const timeline::VideoLayer& layer = videoData.layers[0];
 
                                 if ((!_displayOptions.ocio.enabled ||
@@ -317,13 +326,20 @@ namespace tl
                                     }
                                     else
                                     {
-                                        event.render->drawVideo({videoData}, {box});
+                                        event.render->drawVideo({videoData}, {box},
+                                                                {}, {}, {},
+                                                                background);
                                     }
                                 }
                                 else
                                 {
-                                    event.render->drawVideo({videoData}, {box});
+                                    event.render->drawVideo({videoData}, {box},
+                                                            {}, {}, {},
+                                                            background);
                                 }
+#ifdef VULKAN_BACKEND
+                                event.render->beginLoadRenderPass();
+#endif
                             }
                         }
                         else if (p.ioInfo && !p.ioInfo->video.empty())
@@ -350,7 +366,7 @@ namespace tl
             if (p.infoRequest.future.valid())
             {
                 ids.push_back(p.infoRequest.id);
-                p.infoRequest = timelineui::InfoRequest();
+                p.infoRequest = TIMELINEUI::InfoRequest();
             }
             for (const auto& i : p.thumbnailRequests)
             {
@@ -359,5 +375,5 @@ namespace tl
             p.thumbnailRequests.clear();
             p.thumbnailGenerator->cancelRequests(ids);
         }
-    } // namespace timelineui
+    } // namespace TIMELINEUI
 } // namespace tl

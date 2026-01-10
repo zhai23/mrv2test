@@ -10,12 +10,12 @@
 
 namespace tl
 {
-    namespace timelineui
+    namespace TIMELINEUI
     {
         class ThumbnailGenerator;
     }
 
-    namespace timelineui
+    namespace TIMELINEUI
     {
         //! Audio clip item.
         class AudioClipItem : public IBasicItem
@@ -58,5 +58,5 @@ namespace tl
 
             TLRENDER_PRIVATE();
         };
-    } // namespace timelineui
+    } // namespace TIMELINEUI
 } // namespace tl

@@ -10,7 +10,7 @@
 
 namespace tl
 {
-    namespace timelineui
+    namespace TIMELINEUI
     {
         struct IBasicItem::Private
         {
@@ -349,5 +349,5 @@ namespace tl
             _updates |= ui::Update::Size;
             _updates |= ui::Update::Draw;
         }
-    } // namespace timelineui
+    } // namespace TIMELINEUI
 } // namespace tl

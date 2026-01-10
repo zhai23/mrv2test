@@ -10,7 +10,7 @@
 
 namespace tl
 {
-    namespace timelineui
+    namespace TIMELINEUI
     {
         //! Base class for clips, gaps, and other items.
         class IBasicItem : public IItem
@@ -52,5 +52,5 @@ namespace tl
 
             TLRENDER_PRIVATE();
         };
-    } // namespace timelineui
+    } // namespace TIMELINEUI
 } // namespace tl

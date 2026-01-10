@@ -8,7 +8,7 @@
 
 namespace tl
 {
-    namespace timelineui
+    namespace TIMELINEUI
     {
         
         void TimelineItem::_mouseMoveEventTrim(ui::MouseMoveEvent& event)

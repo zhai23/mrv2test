@@ -22,7 +22,7 @@
 
 namespace tl
 {
-    namespace timelineui
+    namespace TIMELINEUI
     {
         namespace
         {
@@ -226,7 +226,9 @@ namespace tl
         {
             std::weak_ptr<system::Context> context;
             std::shared_ptr<ThumbnailCache> cache;
+#ifdef OPENGL_BACKEND
             std::shared_ptr<gl::GLFWWindow> window;
+#endif
             uint64_t requestId = 0;
 
             struct InfoRequest
@@ -315,6 +317,7 @@ namespace tl
             WaveformThread waveformThread;
         };
 
+#ifdef OPENGL_BACKEND
         void ThumbnailGenerator::_init(
             const std::shared_ptr<ThumbnailCache>& cache,
             const std::shared_ptr<system::Context>& context,
@@ -330,10 +333,21 @@ namespace tl
             if (!p.window)
             {
                 p.window = gl::GLFWWindow::create(
-                    "tl::timelineui::ThumbnailGenerator", math::Size2i(1, 1), context,
+                    "tl::TIMELINEUI::ThumbnailGenerator", math::Size2i(1, 1), context,
                     static_cast<int>(gl::GLFWWindowOptions::kNone));
             }
 
+        }
+
+        ThumbnailGenerator::ThumbnailGenerator() :
+            _p(new Private)
+        {
+        }
+        
+        void ThumbnailGenerator::_startThreads()
+        {
+            TLRENDER_P();
+            
             p.infoThread.running = true;
             p.infoThread.thread = std::thread(
                 [this]
@@ -395,13 +409,114 @@ namespace tl
                     _waveformCancel();
                 });
         }
+#endif
 
-        ThumbnailGenerator::ThumbnailGenerator() :
+#ifdef VULKAN_BACKEND
+        
+        void ThumbnailGenerator::_init(
+            const std::shared_ptr<ThumbnailCache>& cache,
+            const std::shared_ptr<system::Context>& context)
+        {
+            TLRENDER_P();
+
+            p.context = context;
+
+            p.cache = cache;
+
+            _startThreads();
+            
+        }
+        
+        void ThumbnailGenerator::_startThreads()
+        {
+            TLRENDER_P();
+
+            p.infoThread.running = true;
+            p.infoThread.thread = std::thread(
+                [this]
+                    {
+                        TLRENDER_P();
+                        while (p.infoThread.running)
+                        {
+                            _infoRun();
+                        }
+                        {
+                            std::unique_lock<std::mutex> lock(p.infoMutex.mutex);
+                            p.infoMutex.stopped = true;
+                        }
+                        _infoCancel();
+                    });
+
+            p.thumbnailThread.ioCache.setMax(ioCacheMax);
+            p.thumbnailThread.running = true;
+            p.thumbnailThread.thread = std::thread(
+                [this]
+                    {
+                        TLRENDER_P();
+
+                        while (p.thumbnailThread.running)
+                        {
+                            _thumbnailRun();
+                        }
+
+                        {
+                            std::unique_lock<std::mutex> lock(
+                                p.thumbnailMutex.mutex);
+                            p.thumbnailMutex.stopped = true;
+                        }
+                        VkDevice device = ctx.device;
+                        if (device != VK_NULL_HANDLE &&
+                            p.thumbnailThread.commandPool != VK_NULL_HANDLE)
+                        {
+                            VkCommandPool& commandPool = p.thumbnailThread.commandPool;
+
+                            vkFreeCommandBuffers(device, commandPool, 1, &p.thumbnailThread.cmd);
+                            p.thumbnailThread.cmd = VK_NULL_HANDLE;
+
+                            vkDestroyCommandPool(device,
+                                                 p.thumbnailThread.commandPool,
+                                                 nullptr);
+                            p.thumbnailThread.commandPool = VK_NULL_HANDLE;
+
+                        }
+                        p.thumbnailThread.buffer.reset();
+                        p.thumbnailThread.render.reset();
+                        _thumbnailCancel();
+                    });
+
+            p.waveformThread.ioCache.setMax(ioCacheMax);
+            p.waveformThread.running = true;
+            p.waveformThread.thread = std::thread(
+                [this]
+                    {
+                        TLRENDER_P();
+
+                        while (p.waveformThread.running)
+                        {
+                            _waveformRun();
+                        }
+                        {
+                            std::unique_lock<std::mutex> lock(
+                                p.waveformMutex.mutex);
+                            p.waveformMutex.stopped = true;
+                        }
+                        _waveformCancel();
+                    });
+        }
+        
+        ThumbnailGenerator::ThumbnailGenerator(Fl_Vk_Context& ctx) :
+            ctx(ctx),
             _p(new Private)
         {
         }
-
+        
+#endif
         ThumbnailGenerator::~ThumbnailGenerator()
+        {
+            _exitThreads();
+        }
+
+        void ThumbnailGenerator::_exitThreads()
         {
             TLRENDER_P();
 
@@ -439,6 +554,7 @@ namespace tl
             }
         }
 
+#ifdef OPENGL_BACKEND
         std::shared_ptr<ThumbnailGenerator> ThumbnailGenerator::create(
             const std::shared_ptr<ThumbnailCache>& cache,
             const std::shared_ptr<system::Context>& context,
@@ -449,6 +565,20 @@ namespace tl
             out->_init(cache, context, window);
             return out;
         }
+#endif
+
+#ifdef VULKAN_BACKEND
+        std::shared_ptr<ThumbnailGenerator> ThumbnailGenerator::create(
+            const std::shared_ptr<ThumbnailCache>& cache,
+            const std::shared_ptr<system::Context>& context,
+            Fl_Vk_Context& ctx)
+        {
+            auto out =
+                std::shared_ptr<ThumbnailGenerator>(new ThumbnailGenerator(ctx));
+            out->_init(cache, context);
+            return out;
+        }
+#endif
 
         InfoRequest ThumbnailGenerator::getInfo(
             const file::Path& path, const io::Options& options)
@@ -1160,7 +1290,7 @@ namespace tl
         void
         ThumbnailSystem::_init(const std::shared_ptr<system::Context>& context)
         {
-            ISystem::_init("tl::timelineui::ThumbnailSystem", context);
+            ISystem::_init("tl::TIMELINEUI::ThumbnailSystem", context);
             TLRENDER_P();
             p.cache = ThumbnailCache::create(context);
             p.generator = ThumbnailGenerator::create(p.cache, context);
@@ -1210,5 +1340,5 @@ namespace tl
         {
             return _p->cache;
         }
-    } // namespace timelineui
+    } // namespace TIMELINEUI
 } // namespace tl

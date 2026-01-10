@@ -6,6 +6,8 @@
 
 #include <tlUI/IWidget.h>
 
+#include <tlTimelineUI/Namespace.h>
+
 #include <tlTimeline/TimeUnits.h>
 #include <tlTimeline/Timeline.h>
 
@@ -13,7 +15,7 @@
 
 namespace tl
 {
-    namespace timelineui
+    namespace TIMELINEUI
     {
         class IItem;
 
@@ -173,5 +175,5 @@ namespace tl
         private:
             TLRENDER_PRIVATE();
         };
-    } // namespace timelineui
+    } // namespace TIMELINEUI
 } // namespace tl

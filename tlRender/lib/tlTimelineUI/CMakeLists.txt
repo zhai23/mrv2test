@@ -5,6 +5,7 @@ set(HEADERS
     IBasicItem.h
     IItem.h
     Init.h
+    Namespace.h
     ThumbnailSystem.h
     TimelineItem.h
     TimelineWidget.h

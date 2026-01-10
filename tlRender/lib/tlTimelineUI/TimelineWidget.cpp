@@ -11,7 +11,7 @@
 
 namespace tl
 {
-    namespace timelineui
+    namespace TIMELINEUI
     {
         namespace
         {
@@ -94,7 +94,7 @@ namespace tl
             p.displayOptions = observer::Value<DisplayOptions>::create();
 
             p.window = gl::GLFWWindow::create(
-                "tl::timelineui::TimelineWidget", math::Size2i(1, 1), context,
+                "tl::TIMELINEUI::TimelineWidget", math::Size2i(1, 1), context,
                 static_cast<int>(gl::GLFWWindowOptions::kNone));
 
             p.scrollWidget = ui::ScrollWidget::create(
@@ -782,5 +782,5 @@ namespace tl
                 out = p.timelineItem->getSelectedItems();
             return out;
         }
-    } // namespace timelineui
+    } // namespace TIMELINEUI
 } // namespace tl

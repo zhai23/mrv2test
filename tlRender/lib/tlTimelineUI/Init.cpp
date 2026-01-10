@@ -11,16 +11,16 @@
 
 namespace tl
 {
-    namespace timelineui
+    namespace TIMELINEUI
     {
         void init(const std::shared_ptr<system::Context>& context)
         {
             tl::timeline::init(context);
             tl::ui::init(context);
-            if (!context->getSystem<timelineui::ThumbnailSystem>())
+            if (!context->getSystem<TIMELINEUI::ThumbnailSystem>())
             {
-                context->addSystem(timelineui::ThumbnailSystem::create(context));
+                context->addSystem(TIMELINEUI::ThumbnailSystem::create(context));
             }
         }
-    } // namespace timelineui
+    } // namespace TIMELINEUI
 } // namespace tl

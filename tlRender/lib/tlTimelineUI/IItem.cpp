@@ -12,7 +12,7 @@
 
 namespace tl
 {
-    namespace timelineui
+    namespace TIMELINEUI
     {
         bool ItemOptions::operator==(const ItemOptions& other) const
         {
@@ -256,5 +256,5 @@ namespace tl
         }
 
         void IItem::_timeUnitsUpdate() {}
-    } // namespace timelineui
+    } // namespace TIMELINEUI
 } // namespace tl

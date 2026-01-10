@@ -20,8 +20,9 @@
 
 namespace tl
 {
-    namespace timelineui
+    namespace TIMELINEUI
     {
+#ifdef OPENGL_BACKEND
         void TimelineItem::_init(
             const std::shared_ptr<timeline::Player>& player,
             const otio::SerializableObject::Retainer<otio::Stack>& stack,
@@ -31,13 +32,17 @@ namespace tl
             const std::shared_ptr<gl::GLFWWindow>& window,
             const std::shared_ptr<system::Context>& context,
             const std::shared_ptr<IWidget>& parent)
+#endif
+
+#ifdef VULKAN_BACKEND
+#endif
         {
             const otime::TimeRange timeRange = player->getTimeRange();
             const otime::TimeRange trimmedRange(
                 otime::RationalTime(0.0, timeRange.duration().rate()),
                 timeRange.duration());
             IItem::_init(
-                "tl::timelineui::TimelineItem", timeRange, trimmedRange, scale,
+                "tl::TIMELINEUI::TimelineItem", timeRange, trimmedRange, scale,
                 options, displayOptions, itemData, context, parent);
             TLRENDER_P();
 
@@ -50,9 +55,14 @@ namespace tl
             p.timeScrub =
                 observer::Value<otime::RationalTime>::create(time::invalidTime);
 
-            p.thumbnailGenerator = timelineui::ThumbnailGenerator::create(
-                context->getSystem<timelineui::ThumbnailSystem>()->getCache(), context,
+#ifdef OPENGL_BACKEND
+            p.thumbnailGenerator = TIMELINEUI::ThumbnailGenerator::create(
+                context->getSystem<TIMELINEUI::ThumbnailSystem>()->getCache(), context,
                 window);
+#endif
+
+#ifdef VULKAN_BACKEND
+#endif
 
             const auto otioTimeline = p.player->getTimeline()->getTimeline();
             for (const auto& child : otioTimeline->tracks()->children())
@@ -1522,5 +1532,5 @@ namespace tl
             return !(clampedRange == proposedRange);
         }
         
-    } // namespace timelineui
+    } // namespace TIMELINEUI
 } // namespace tl

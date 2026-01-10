@@ -11,7 +11,7 @@
 
 namespace tl
 {
-    namespace timelineui
+    namespace TIMELINEUI
     {
         //! Timeline viewport.
         class TimelineViewport : public ui::IWidget
@@ -138,5 +138,5 @@ namespace tl
 
             TLRENDER_PRIVATE();
         };
-    } // namespace timelineui
+    } // namespace TIMELINEUI
 } // namespace tl

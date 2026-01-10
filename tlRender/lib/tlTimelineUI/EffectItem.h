@@ -10,7 +10,7 @@
 
 namespace tl
 {
-    namespace timelineui
+    namespace TIMELINEUI
     {
         //! Effect item.
         class EffectItem : public IBasicItem
@@ -50,5 +50,5 @@ namespace tl
 
             TLRENDER_PRIVATE();
         };
-    } // namespace timelineui_vk
+    } // namespace TIMELINEUI_vk
 } // namespace tl

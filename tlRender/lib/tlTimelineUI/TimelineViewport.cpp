@@ -15,7 +15,7 @@
 
 namespace tl
 {
-    namespace timelineui
+    namespace TIMELINEUI
     {
         struct TimelineViewport::Private
         {
@@ -669,5 +669,5 @@ namespace tl
             }
             p.droppedFramesData.frame = value.value();
         }
-    } // namespace timelineui
+    } // namespace TIMELINEUI
 } // namespace tl
