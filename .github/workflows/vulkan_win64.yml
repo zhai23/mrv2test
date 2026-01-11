@@ -178,6 +178,15 @@ jobs:
       run: |
         ./etc/runme_nolog.sh -v -t package -vk clean
         
+    - name: Upload artifacts to GitHub Actions
+      uses: actions/upload-artifact@v4
+      with:
+        name: mrv2-windows-vulkan-amd64
+        path: |
+          Windows-vulkan-amd64/Release/*.exe
+          Windows-vulkan-amd64/Release/*.zip
+        retention-days: 30
+        
     - name: Upload binaries 
       run: |
         ./bin/release/upload_sourceforge.sh -vk
