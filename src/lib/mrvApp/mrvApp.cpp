@@ -257,7 +257,7 @@ namespace mrv
 
     ViewerUI* App::ui = nullptr;
     App* App::app = nullptr;
-    bool App::demo_mode = true;
+    bool App::demo_mode = false;  // Free version - no demo mode
     bool App::force_demo = false;
 
     std::string App::session_id = "";
@@ -265,11 +265,11 @@ namespace mrv
 
     bool App::supports_saving = true;   // DJV supports saving
     bool App::supports_layers = true;   // DJV supports layers
-    bool App::supports_annotations = false;
-    bool App::supports_editing = false;
+    bool App::supports_annotations = true;  // Free version - all features enabled
+    bool App::supports_editing = true;      // Free version - all features enabled
     bool App::supports_hdr = true;
-    bool App::supports_python = false;
-    bool App::supports_voice = false;
+    bool App::supports_python = true;       // Free version - all features enabled
+    bool App::supports_voice = true;        // Free version - all features enabled
     
     bool App::unsaved_annotations = false;
     bool App::unsaved_edits = false;

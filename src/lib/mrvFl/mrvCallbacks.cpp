@@ -2884,25 +2884,17 @@ namespace mrv
     }
 
     void unlock_features_cb(Fl_Menu_*, ViewerUI* ui)
-    {        
-#ifdef _WIN32
-        std::string helper = rootpath() + "/bin/license_helper.exe";
-#else
-        std::string helper = rootpath() + "/bin/license_helper";
-#endif
-#ifdef __APPLE__
-        // This is needed for macOS installed bundle.
-        if (!file::isReadable(helper))
-        {
-            helper = rootpath() + "/../Resources/bin/license_helper";
-        }
-#endif
-        int ret = os::exec_command(helper);
-        if (ret != 0) return;
-        
-
-        std::string expiration;
-        validate_license(expiration);
+    {
+        // Free version - all features are already enabled
+        fl_message(_("mrv2 is now completely free!\n\n"
+                     "All features are permanently enabled:\n"
+                     "✓ Annotations\n"
+                     "✓ Editing\n"
+                     "✓ Multiple Layers\n"
+                     "✓ Python Support\n"
+                     "✓ Voice Annotations\n"
+                     "✓ All Saving Features\n\n"
+                     "Enjoy using mrv2!"));
     }
     
     void help_documentation_cb(Fl_Menu_*, ViewerUI* ui)

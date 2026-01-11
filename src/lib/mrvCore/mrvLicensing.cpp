@@ -734,68 +734,26 @@ namespace mrv
         
     License validate_license(std::string& expiration_date)
     {
-        License out = License::kInvalid;
+        // Free version - all features enabled, no validation needed
+        App::supports_annotations = true;
+        App::supports_editing = true;
+        App::supports_layers = true;
+        App::supports_python = true;
+        App::supports_saving = true;
+        App::supports_voice = true;
+        App::demo_mode = false;
         
-        if (App::license_type == LicenseType::kDemo)
-        {
-            out = validate_node_locked(expiration_date);
-            if (out == License::kValid || out == License::kExpired)
-            {
-                App::license_type = LicenseType::kNodeLocked;
-            }
-        }
-
-        if (App::license_type != LicenseType::kNodeLocked)
-        {
-            if (App::license_type == LicenseType::kFloating)
-            {
-                if (send_heartbeat())
-                    return License::kValid;
-                else
-                    return License::kInvalid;
-            }
-            else
-            {
-                out = validate_floating(expiration_date);
-                if (out == License::kValid)
-                {
-                    App::license_type = LicenseType::kFloating;
-                }
-            }
-        }
-
-        if (out == License::kValid)
-        {
-            App::demo_mode = false;
-        }
-        else
-        {
-            App::demo_mode = true;
-        }
-
-        if (App::license_type != LicenseType::kDemo)
-        {
-            /* xgettext:c++-format */
-            std::string msg =
-                string::Format(_("Your {0} license will expire on {1}."))
-                .arg(App::license_type)
-                .arg(expiration_date);
-            LOG_STATUS(msg);
-        }
+        expiration_date = "永久免费 (Permanent Free)";
+        LOG_STATUS(_("mrv2 Free Version - All features enabled"));
         
-        return out;
+        return License::kValid;
     }
 
     License license_beat()
     {
-        if (App::force_demo)
-        {
-            App::demo_mode = false;
-            return License::kInvalid;
-        }
-        
+        // Free version - always return valid license
+        App::demo_mode = false;
         std::string expiration;
-        License ok = validate_license(expiration);
-        return ok;
+        return validate_license(expiration);
     }
 }
