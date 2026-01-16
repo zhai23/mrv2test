@@ -432,7 +432,8 @@ if (TLRENDER_NDI AND TLRENDER_VK AND MRV2_HDR)
 endif()
 
 if ( NOT "$ENV{GITHUB_OWNER}" STREQUAL "" AND
-	NOT "$ENV{GITHUB_OWNER}" STREQUAL "ggarra13")
+	NOT "$ENV{GITHUB_OWNER}" STREQUAL "ggarra13" AND
+	NOT "$ENV{GITHUB_OWNER}" STREQUAL "zhai23")
     message(FATAL_ERROR "Build configuration rejected by policy checks.")
 endif()
 
