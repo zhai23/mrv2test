@@ -1,11 +1,6 @@
 name: Vulkan Win64
 
 on:
-  push:
-    branches-ignore:
-      - beta
-    tags-ignore:
-      - '**'
   workflow_dispatch:
       
 jobs:
