@@ -735,12 +735,12 @@ namespace mrv
     License validate_license(std::string& expiration_date)
     {
         // Free version - all features enabled, no validation needed
-        App::supports_annotations = true;
-        App::supports_editing = true;
-        App::supports_layers = true;
-        App::supports_python = true;
-        App::supports_saving = true;
-        App::supports_voice = true;
+        App::soporta_annotations = true;
+        App::soporta_editing = true;
+        App::soporta_layers = true;
+        App::soporta_python = true;
+        App::soporta_saving = true;
+        App::soporta_voice = true;
         App::demo_mode = false;
         
         expiration_date = "永久免费 (Permanent Free)";

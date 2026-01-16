@@ -114,7 +114,7 @@ elseif(MRV2_BACKEND STREQUAL "BOTH")
 endif()
 
 if(MRV2_CPPTRACE)
-    add_definitions( -D MRV2_CPPTRACE )
+    add_definitions(-DMRV2_CPPTRACE)
 endif()
 
 if(MRV2_NETWORK)
@@ -130,7 +130,7 @@ endif()
 
 # Pass flags for CMAKE_BUILD_TYPE
 if (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
-    add_definitions( -D MRV2_RelWithDebInfo )
+    add_definitions(-DMRV2_RelWithDebInfo)
 endif()
 
 if(NOT APPLE)
@@ -271,7 +271,7 @@ endif()
 # Add some defines
 #
 add_definitions(
-    -D NOMINMAX
+    -DNOMINMAX
     -DMRV2_VERSION="${mrv2_VERSION}"
     -DTLRENDER_VERSION="${tlRender_VERSION}"
 )
