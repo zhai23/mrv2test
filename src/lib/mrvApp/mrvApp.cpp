@@ -272,6 +272,7 @@ namespace mrv
     bool App::supports_python = true;       // Free version - all features enabled
     bool App::supports_voice = true;        // Free version - all features enabled
     
+
     bool App::unsaved_annotations = false;
     bool App::unsaved_edits = false;
 
@@ -994,7 +995,7 @@ namespace mrv
         bool showUI = true;
 
 #ifdef MRV2_PYBIND11
-        if (App::supports_python && !p.options.pythonScript.empty())
+        if (App::soporta_python && !p.options.pythonScript.empty())
         {
             showUI = false;
         }
@@ -1159,7 +1160,7 @@ namespace mrv
         }
 
 #ifdef MRV2_PYBIND11
-        if (!p.options.noPython && App::supports_python)
+        if (!p.options.noPython && App::soporta_python)
         {
             // Import the mrv2 python module so we read all python
             // plug-ins.

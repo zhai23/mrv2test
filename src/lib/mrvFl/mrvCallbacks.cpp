@@ -2896,6 +2896,27 @@ namespace mrv
                      "✓ Voice Annotations\n"
                      "✓ All Saving Features\n\n"
                      "Enjoy using mrv2!"));
+    {        
+#ifdef _WIN32
+        std::string helper = rootpath() + "/bin/license_helper.exe";
+#else
+        std::string helper = rootpath() + "/bin/license_helper";
+#endif
+#ifdef __APPLE__
+        // This is needed for macOS installed bundle.
+        if (!file::isReadable(helper))
+        {
+            helper = rootpath() + "/../Resources/bin/license_helper";
+        }
+#endif
+
+        if (!file::isReadable(helper))
+        {
+            LOG_ERROR(_("Install is broken.  Missing license_helper"));
+        }
+        
+        int ret = os::exec_command(helper);
+        if (ret != 0) return;
     }
     
     void help_documentation_cb(Fl_Menu_*, ViewerUI* ui)

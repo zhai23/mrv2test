@@ -314,6 +314,8 @@ if [ -z "$FLTK_BUILD_SHARED" ]; then
 	export FLTK_BUILD_SHARED=OFF
     fi
 fi
+
+export GITHUB_OWNER="${GITHUB_REPOSITORY%%/*}"
     
 #
 # Clean python path to avoid clashes, mainly, with macOS meson
